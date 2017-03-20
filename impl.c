@@ -12,10 +12,10 @@ void sse_transpose(int *src, int *dst, int w, int h)
 {
     for (int x = 0; x < w; x += 4) {
         for (int y = 0; y < h; y += 4) {
-            __m128i I0 = _mm_loadu_si128((__m128i *)(src + (y + 0) * w + x));
-            __m128i I1 = _mm_loadu_si128((__m128i *)(src + (y + 1) * w + x));
-            __m128i I2 = _mm_loadu_si128((__m128i *)(src + (y + 2) * w + x));
-            __m128i I3 = _mm_loadu_si128((__m128i *)(src + (y + 3) * w + x));
+            __m128i I0 = _mm_load_si128((__m128i *)(src + (y + 0) * w + x));
+            __m128i I1 = _mm_load_si128((__m128i *)(src + (y + 1) * w + x));
+            __m128i I2 = _mm_load_si128((__m128i *)(src + (y + 2) * w + x));
+            __m128i I3 = _mm_load_si128((__m128i *)(src + (y + 3) * w + x));
             __m128i T0 = _mm_unpacklo_epi32(I0, I1);
             __m128i T1 = _mm_unpacklo_epi32(I2, I3);
             __m128i T2 = _mm_unpackhi_epi32(I0, I1);
@@ -42,10 +42,10 @@ void sse_prefetch_transpose(int *src, int *dst, int w, int h)
             _mm_prefetch(src+(y + PFDIST + 2) *w + x, _MM_HINT_T1);
             _mm_prefetch(src+(y + PFDIST + 3) *w + x, _MM_HINT_T1);
 
-            __m128i I0 = _mm_loadu_si128 ((__m128i *)(src + (y + 0) * w + x));
-            __m128i I1 = _mm_loadu_si128 ((__m128i *)(src + (y + 1) * w + x));
-            __m128i I2 = _mm_loadu_si128 ((__m128i *)(src + (y + 2) * w + x));
-            __m128i I3 = _mm_loadu_si128 ((__m128i *)(src + (y + 3) * w + x));
+            __m128i I0 = _mm_load_si128 ((__m128i *)(src + (y + 0) * w + x));
+            __m128i I1 = _mm_load_si128 ((__m128i *)(src + (y + 1) * w + x));
+            __m128i I2 = _mm_load_si128 ((__m128i *)(src + (y + 2) * w + x));
+            __m128i I3 = _mm_load_si128 ((__m128i *)(src + (y + 3) * w + x));
             __m128i T0 = _mm_unpacklo_epi32(I0, I1);
             __m128i T1 = _mm_unpacklo_epi32(I2, I3);
             __m128i T2 = _mm_unpackhi_epi32(I0, I1);
@@ -61,5 +61,25 @@ void sse_prefetch_transpose(int *src, int *dst, int w, int h)
         }
     }
 }
-
-#endif /* TRANSPOSE_IMPL */
+/*
+void avx_transpose(int *src, int *dst, int w,int h)
+{
+    for(int x = 0; x < w; x += 4){
+        for(int y = 0; y < h; y += 4){
+            __m256i I0 = _mm256_load_si256((__m256i *)(src + (y + 0) * w + x));
+            __m256i I1 = _mm256_load_si256((__m256i *)(src + (y + 2) * w + x));
+            __m256i T0 = _mm256_shuffle_epi32(I0, _MM_SHUFFLE());
+            __m256i T1 = _mm256_unpackhi_epi32(I0, I1);
+            I0 = _mm256_shffle_epi32(, );
+            I1 = _mm256_unpackhi_epi32(T0, T1);
+            T0 = _mm256_unpacklo_epi32(I0, I1);
+            T1 = _mm256_unpackhi_epi32(I0, I1);
+            I0 = _mm256_unpacklo_epi32(T0, T1);
+            I1 = _mm256_unpackhi_epi32(T0, T1);
+            _mm256_store_si256((__m256i *)(dst + ((x + 0) * h) + y), I0);
+            _mm256_store_si256((__m256i *)(dst + ((x + 2) * h) + y), I1);
+        }
+    }
+}
+*/
+#endif
